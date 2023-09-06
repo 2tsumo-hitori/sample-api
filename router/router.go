@@ -5,7 +5,7 @@ import (
 	"sample-api/controller"
 )
 
-func InitHandler() *gin.Engine {
+func InitRouter() {
 	r := gin.Default()
 
 	c := controller.NewController()
@@ -14,5 +14,7 @@ func InitHandler() *gin.Engine {
 	r.POST("/albums", c.AddAlbum)
 	r.GET("/albums/:id", c.Album)
 
-	return r
+	r.POST("/es/ac", c.AutoCompleteSearch)
+
+	r.Run(":8080")
 }

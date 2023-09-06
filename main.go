@@ -1,11 +1,11 @@
 package main
 
 import (
+	"sample-api/config/esclient"
 	"sample-api/router"
 )
 
 func main() {
-	r := router.InitHandler()
-
-	r.Run(":8080")
+	esclient.InitElasticSearch()
+	router.InitRouter()
 }
