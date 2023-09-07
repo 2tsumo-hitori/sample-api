@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"github.com/2tsumo-hitori/sample-api/model"
+	"github.com/2tsumo-hitori/sample-api/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"sample-api/model"
-	"sample-api/response"
 )
 
 func (controller *Controller) AlbumList(c *gin.Context) {

@@ -1,0 +1,96 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/es/ac": {
+            "post": {
+                "description": "keydown을 감지할 때 마다 영화 키워드를 제공합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "영화 자동 완성 검색",
+                "operationId": "autoCompleteSearch",
+                "parameters": [
+                    {
+                        "description": "영화 검색 요청 정보",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MovieRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "검색된 영화 목록",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AutoCompleteResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/es/search": {
+            "post": {
+                "description": "검색 키워드에 해당되는 영화 목록을 제공합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "영화 검색",
+                "operationId": "MovieSearch",
+                "parameters": [
+                    {
+                        "description": "영화 검색 요청 정보",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MovieRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "검색된 영화 목록",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AutoCompleteResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AutoCompleteResponse": {
+            "type": "object",
+            "properties": {
+                "movieNm": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MovieRequest": {
+            "type": "object",
+            "properties": {
+                "movieNm": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

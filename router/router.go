@@ -1,11 +1,11 @@
 package router
 
 import (
+	"github.com/2tsumo-hitori/sample-api/controller"
+	_ "github.com/2tsumo-hitori/sample-api/docs"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"sample-api/controller"
-	_ "sample-api/docs"
 )
 
 // @title           검색 API

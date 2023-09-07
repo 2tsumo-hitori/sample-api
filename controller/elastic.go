@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"github.com/2tsumo-hitori/sample-api/handler"
+	"github.com/2tsumo-hitori/sample-api/model"
+	"github.com/2tsumo-hitori/sample-api/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"sample-api/handler"
-	"sample-api/model"
-	"sample-api/response"
 )
 
 // MovieSearch 함수는 영화 검색을 제공합니다.

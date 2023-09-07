@@ -1,0 +1,61 @@
+definitions:
+  model.AutoCompleteResponse:
+    properties:
+      movieNm:
+        type: string
+    type: object
+  model.MovieRequest:
+    properties:
+      movieNm:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /es/ac:
+    post:
+      consumes:
+      - application/json
+      description: keydown을 감지할 때 마다 영화 키워드를 제공합니다.
+      operationId: autoCompleteSearch
+      parameters:
+      - description: 영화 검색 요청 정보
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.MovieRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 검색된 영화 목록
+          schema:
+            items:
+              $ref: '#/definitions/model.AutoCompleteResponse'
+            type: array
+      summary: 영화 자동 완성 검색
+  /es/search:
+    post:
+      consumes:
+      - application/json
+      description: 검색 키워드에 해당되는 영화 목록을 제공합니다.
+      operationId: MovieSearch
+      parameters:
+      - description: 영화 검색 요청 정보
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.MovieRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 검색된 영화 목록
+          schema:
+            items:
+              $ref: '#/definitions/model.AutoCompleteResponse'
+            type: array
+      summary: 영화 검색
+swagger: "2.0"

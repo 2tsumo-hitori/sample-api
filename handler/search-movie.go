@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"github.com/2tsumo-hitori/sample-api/config/esclient"
+	"github.com/2tsumo-hitori/sample-api/model"
+	"github.com/2tsumo-hitori/sample-api/util"
 	"github.com/olivere/elastic/v7"
 	"log"
-	"sample-api/config/esclient"
-	"sample-api/model"
-	"sample-api/util"
 )
 
 const (
