@@ -8,7 +8,7 @@ import (
 )
 
 func (controller *Controller) AlbumList(c *gin.Context) {
-	c.JSON(http.StatusOK, response.NewResponse().GetResponse(model.Albums()))
+	c.JSON(http.StatusOK, response.NewResponse(model.Albums()))
 }
 
 func (controller *Controller) AddAlbum(c *gin.Context) {
@@ -19,7 +19,7 @@ func (controller *Controller) AddAlbum(c *gin.Context) {
 	} else {
 		model.SetAlbum(newAlbum)
 
-		c.JSON(http.StatusCreated, response.NewResponse().GetResponse(newAlbum))
+		c.JSON(http.StatusCreated, response.NewResponse(newAlbum))
 	}
 }
 
@@ -27,7 +27,7 @@ func (controller *Controller) Album(c *gin.Context) {
 	id := c.Param("id")
 
 	if _, exists := model.Albums()[id]; exists {
-		c.JSON(http.StatusOK, response.NewResponse().GetResponse(model.Albums()[id]))
+		c.JSON(http.StatusOK, response.NewResponse(model.Albums()[id]))
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "잘못된 요청입니다."})
 	}

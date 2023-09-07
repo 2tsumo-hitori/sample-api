@@ -1,18 +1,16 @@
 package response
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type response struct {
 	Data   interface{} `json:"data"`
 	Status int32       `json:"status"`
 }
 
-func NewResponse() response {
-	return response{}
-}
-
-func (r response) GetResponse(obj interface{}) response {
-	resp := NewResponse()
+func NewResponse(obj interface{}) response {
+	resp := response{}
 
 	resp.Data = obj
 	resp.Status = http.StatusOK

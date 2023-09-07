@@ -6,15 +6,28 @@ import (
 	"github.com/olivere/elastic/v7"
 	"log"
 	"sample-api/config/esclient"
-	"sample-api/model"
 )
 
-func AutoComplete(searchKeyword string, resp *[]model.AutoCompleteResponse) {
+func SearchByKeyword[T any](searchKeyword string, resp *[]T) {
 	query := elastic.NewMatchQuery("movieNm_text", searchKeyword)
 
+	sendRequestToElastic(query, resp)
+}
+
+func AutoCompleteByKeyword[T any](searchKeyword string, resp *[]T) {
+	query := elastic.
+		NewBoolQuery().
+		Should(elastic.
+			NewMatchQuery("movieNm_ac", searchKeyword))
+
+	sendRequestToElastic(query, resp)
+}
+
+func sendRequestToElastic[T any](query elastic.Query, resp *[]T) {
 	client := esclient.Client()
 
-	searchResult, err := client.Search().
+	searchResult, err := client.
+		Search().
 		Index("my_movie_search").
 		Query(query).
 		Pretty(true).
@@ -24,7 +37,7 @@ func AutoComplete(searchKeyword string, resp *[]model.AutoCompleteResponse) {
 		log.Fatal(err)
 	} else {
 		for _, hit := range searchResult.Hits.Hits {
-			movie := model.AutoCompleteResponse{}
+			var movie T
 
 			if err := json.Unmarshal(hit.Source, &movie); err != nil {
 				log.Fatal(err)
