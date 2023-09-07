@@ -2,11 +2,6 @@ package util
 
 import "strings"
 
-// 들어오는 requestBody를 분석
-// requestBody를 split 해서 한글자씩 만듬
-// 만약 초성에 해당되지 않는다면 AutoCompleteByKeyword
-// 만약 초성에 해당된다면 AutoCompleteByChosung
-
 var hangulMap = map[string]string{
 	" ": " ",
 	"ㄱ": "ㄱ",
