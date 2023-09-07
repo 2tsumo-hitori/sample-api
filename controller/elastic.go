@@ -8,6 +8,15 @@ import (
 	"sample-api/response"
 )
 
+// MovieSearch 함수는 영화 검색을 제공합니다.
+// @Summary 영화 검색
+// @Description 검색 키워드에 해당되는 영화 목록을 제공합니다.
+// @ID MovieSearch
+// @Accept  json
+// @Produce  json
+// @Param request body model.MovieRequest true "영화 검색 요청 정보"
+// @Success 200 {array} model.AutoCompleteResponse "검색된 영화 목록"
+// @Router /es/search [post]
 func (controller *Controller) MovieSearch(c *gin.Context) {
 	var requestBody model.MovieRequest
 	var movies []model.SearchResponse
@@ -21,7 +30,7 @@ func (controller *Controller) MovieSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewResponse(movies))
 }
 
-// AutoCompleteSearch 함수는 영화 자동 완성 검색을 제공합니다.
+// AutoCompleteSearch 함수는 단어/초성 기반의 영화 자동 완성 검색을 제공합니다.
 // @Summary 영화 자동 완성 검색
 // @Description keydown을 감지할 때 마다 영화 키워드를 제공합니다.
 // @ID autoCompleteSearch

@@ -1,5 +1,9 @@
 package model
 
+type Response interface {
+	AutoCompleteResponse | SearchResponse
+}
+
 type AutoCompleteResponse struct {
 	MovieNm string `json:"movieNm"`
 }
