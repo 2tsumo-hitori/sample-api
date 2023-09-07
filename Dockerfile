@@ -1,24 +1,17 @@
-FROM golang:alpine AS builder
+# Go 언어 이미지 사용
+FROM golang:alpine
 
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
+# 작업 디렉터리 설정
+WORKDIR /app
 
-WORKDIR /build
+# 현재 디렉터리의 모든 파일을 컨테이너 내 /app 디렉터리로 복사
+COPY . .
 
-COPY go.mod go.sum main.go ./
+# Go 모듈을 초기화하고 필요한 종속성을 설치
+RUN go mod tidy
 
-RUN go mod download
+# 애플리케이션 빌드
+RUN go build -o main main.go
 
-RUN go build -o main .
-
-WORKDIR /dist
-
-RUN cp /build/main .
-
-FROM scratch
-
-COPY --from=builder /dist/main .
-
-ENTRYPOINT ["/main"]
+# 컨테이너 시작 시 실행될 명령 설정
+CMD ["./main"]
