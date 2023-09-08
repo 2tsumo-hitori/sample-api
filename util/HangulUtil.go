@@ -45,10 +45,10 @@ func InspectSpell(keyword string) (string, string) {
 		}
 	}
 
-	return "chosung", fixSpell(spells)
+	return "chosung", FixSpell(spells)
 }
 
-func fixSpell(spells []string) string {
+func FixSpell(spells []string) string {
 	var sb strings.Builder
 
 	for i := 0; i < len(spells); i++ {

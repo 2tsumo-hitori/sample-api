@@ -1,9 +1,9 @@
 package esclient
 
 import (
+	"fmt"
 	"github.com/olivere/elastic/v7"
 	"time"
-	"fmt"
 )
 
 var client *elastic.Client

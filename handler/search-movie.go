@@ -11,49 +11,69 @@ import (
 )
 
 const (
-	index        = "my_movie_search"
-	movieNmText  = "movieNm_text"
-	word         = "word"
-	movieNmAc    = "movieNm_ac"
-	chosungFront = "movieNm_chosung_front"
-	chosungBack  = "movieNm_chosung_back"
-	movieNmCount = "movieNmCount"
+	index           = "my_movie_search"
+	movieNmText     = "movieNm_text"
+	movieNmEngToKor = "movieNm_eng2kor"
+	movieNmKorToEng = "movieNm_kor2eng"
+	word            = "word"
+	movieNmAc       = "movieNm_ac"
+	chosungFront    = "movieNm_chosung_front"
+	chosungBack     = "movieNm_chosung_back"
+	movieNmCount    = "movieNmCount"
 )
 
 func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
-	query := elastic.NewMatchQuery(movieNmText, searchKeyword)
+	q := util.Queue{}
 
-	sendRequestToElastic(query, resp)
+	_, s := util.InspectSpell(searchKeyword)
+
+	q.Enqueue(elastic.NewMatchQuery(movieNmText, s))
+	q.Enqueue(elastic.NewMatchQuery(movieNmEngToKor, s))
+	q.Enqueue(elastic.NewMatchQuery(movieNmKorToEng, s))
+
+	sendRequestToElastic(q, resp)
 }
 
 func AutoCompleteByKeyword[T model.Response](searchKeyword string, resp *[]T) {
-	query := queryBuilderByKeyword(searchKeyword)
+	q := util.Queue{}
 
-	sendRequestToElastic(query, resp)
+	q.Enqueue(queryBuilderByKeyword(searchKeyword))
+
+	sendRequestToElastic(q, resp)
 }
 
-func sendRequestToElastic[T model.Response](query elastic.Query, resp *[]T) {
+// 검색어를 일반검색, 한/영 오타변환, 영/한 오타변환 쿼리들로 만들어 queue로 쌓고 재귀적으로 오타교정 구현
+// ** 오타교정 쿼리 추가예정 **
+func sendRequestToElastic[T model.Response](query util.Queue, resp *[]T) {
+	if query.IsEmpty() {
+		return
+	}
+
 	client := esclient.Client()
 
 	searchResult, err := client.
 		Search().
 		Index(index).
-		Query(query).
+		Query(query.Dequeue().(elastic.Query)).
 		Pretty(true).
 		Do(context.Background())
 
 	if err != nil {
-		log.Fatal(err)
-	} else {
-		for _, hit := range searchResult.Hits.Hits {
-			var movie T
+		panic(err)
+	}
 
-			if err := json.Unmarshal(hit.Source, &movie); err != nil {
-				log.Fatal(err)
-			}
+	if searchResult.TotalHits() == 0 {
+		sendRequestToElastic(query, resp)
+	}
 
-			*resp = append(*resp, movie)
+	for _, hit := range searchResult.Hits.Hits {
+		var movie T
+
+		if err := json.Unmarshal(hit.Source, &movie); err != nil {
+			log.Fatal(err)
 		}
+
+		*resp = append(*resp, movie)
 	}
 }
 
