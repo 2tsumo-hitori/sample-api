@@ -8,8 +8,8 @@ WORKDIR /app
 COPY . .
 
 # Go 모듈을 초기화하고 필요한 종속성을 설치
+RUN go mod init github.com/2tsumo-hitori/sample-api
 RUN go mod tidy
-
 # 애플리케이션 빌드
 RUN go build -o main main.go
 
