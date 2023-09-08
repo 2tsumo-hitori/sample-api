@@ -3,6 +3,7 @@ package esclient
 import (
 	"github.com/olivere/elastic/v7"
 	"time"
+	"fmt"
 )
 
 var client *elastic.Client
@@ -19,6 +20,8 @@ func InitElasticSearch() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(client)
 }
 
 func Client() *elastic.Client {
