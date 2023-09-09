@@ -9,6 +9,8 @@ import (
 	"github.com/2tsumo-hitori/sample-api/util"
 	"github.com/olivere/elastic/v7"
 	"log"
+	"os"
+	"os/exec"
 )
 
 const (
@@ -21,6 +23,9 @@ const (
 	chosungFront    = "movieNm_chosung_front"
 	chosungBack     = "movieNm_chosung_back"
 	movieNmCount    = "movieNmCount"
+
+	pythonPath = "/usr/bin/python3"
+	pythonFile = "/unicode.py"
 )
 
 func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
@@ -105,6 +110,9 @@ func queryBuildByKeyword(searchKeyword string) elastic.Query {
 }
 
 func BuildSuggestQuery(searchKeyword string) string {
+	// 고루틴 사용해서 병렬로 처리?
+	// 통신 끝나면 한번에 같이 반환
+	// 속도도 더 빠를듯 함.
 	termSuggester := elastic.NewTermSuggester("movie-suggestion").
 		Field("movieNm_text.spell").
 		StringDistance("jaro_winkler").
@@ -133,5 +141,15 @@ func BuildSuggestQuery(searchKeyword string) string {
 		}
 	}
 
-	return resp
+	path, _ := os.Getwd()
+
+	cmd := exec.Command(pythonPath, path+pythonFile, resp)
+
+	output, err := cmd.CombinedOutput()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(output)
 }
