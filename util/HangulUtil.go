@@ -1,6 +1,15 @@
 package util
 
-import "strings"
+import (
+	"os"
+	"os/exec"
+	"strings"
+)
+
+const (
+	pythonPath = "/usr/bin/python3"
+	pythonFile = "/unicode.py"
+)
 
 var hangulMap = map[string]string{
 	" ": " ",
@@ -56,4 +65,18 @@ func FixSpell(spells []string) string {
 	}
 
 	return sb.String()
+}
+
+func CombineSplitWords(spell *string) {
+	path, _ := os.Getwd()
+
+	cmd := exec.Command(pythonPath, path+pythonFile, *spell)
+
+	output, err := cmd.CombinedOutput()
+
+	if err != nil {
+		panic(err)
+	}
+
+	*spell = string(output)
 }

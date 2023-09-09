@@ -3,14 +3,11 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/2tsumo-hitori/sample-api/config/esclient"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/util"
 	"github.com/olivere/elastic/v7"
 	"log"
-	"os"
-	"os/exec"
 )
 
 const (
@@ -23,15 +20,10 @@ const (
 	chosungFront    = "movieNm_chosung_front"
 	chosungBack     = "movieNm_chosung_back"
 	movieNmCount    = "movieNmCount"
-
-	pythonPath = "/usr/bin/python3"
-	pythonFile = "/unicode.py"
 )
 
 func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
-	keyword := BuildSuggestQuery(searchKeyword)
-
-	fmt.Println(keyword)
+	suggestKeyword := BuildSuggestQuery(searchKeyword)
 
 	q := util.Queue{}
 
@@ -40,6 +32,7 @@ func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
 	q.Enqueue(elastic.NewMatchQuery(movieNmText, s))
 	q.Enqueue(elastic.NewMatchQuery(movieNmEngToKor, s))
 	q.Enqueue(elastic.NewMatchQuery(movieNmKorToEng, s))
+	q.Enqueue(elastic.NewMatchQuery(movieNmText, suggestKeyword))
 
 	sendRequestToElastic(q, resp)
 }
@@ -53,7 +46,6 @@ func AutoCompleteByKeyword[T model.Response](searchKeyword string, resp *[]T) {
 }
 
 // 검색어를 [일반검색, 한/영 오타변환, 영/한 오타변환] 쿼리들로 만들어 queue에 쌓고 재귀적으로 오타교정 구현
-// ** 오타교정 쿼리 추가예정 **
 func sendRequestToElastic[T model.Response](queryQueue util.Queue, resp *[]T) {
 	// 종료 조건
 	if queryQueue.IsEmpty() {
@@ -141,15 +133,7 @@ func BuildSuggestQuery(searchKeyword string) string {
 		}
 	}
 
-	path, _ := os.Getwd()
+	util.CombineSplitWords(&resp)
 
-	cmd := exec.Command(pythonPath, path+pythonFile, resp)
-
-	output, err := cmd.CombinedOutput()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return string(output)
+	return resp
 }
