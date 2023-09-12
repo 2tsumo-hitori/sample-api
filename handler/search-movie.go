@@ -23,7 +23,10 @@ const (
 )
 
 func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
-	suggestKeyword := BuildSuggestQuery(searchKeyword)
+	suggestKeyword := searchKeyword
+
+	ch := make(chan bool)
+	go BuildSuggestQuery(&suggestKeyword, ch)
 
 	q := util.Queue{}
 
@@ -32,9 +35,20 @@ func SearchByKeyword[T model.Response](searchKeyword string, resp *[]T) {
 	q.Enqueue(elastic.NewMatchQuery(movieNmText, s))
 	q.Enqueue(elastic.NewMatchQuery(movieNmEngToKor, s))
 	q.Enqueue(elastic.NewMatchQuery(movieNmKorToEng, s))
-	q.Enqueue(elastic.NewMatchQuery(movieNmText, suggestKeyword))
 
 	sendRequestToElastic(q, resp)
+
+	if len(*resp) != 0 {
+		return
+	}
+
+	select {
+	case <-ch:
+		q := util.Queue{}
+		q.Enqueue(elastic.NewMatchQuery(movieNmText, suggestKeyword))
+		sendRequestToElastic(q, resp)
+		close(ch)
+	}
 }
 
 func AutoCompleteByKeyword[T model.Response](searchKeyword string, resp *[]T) {
@@ -101,14 +115,11 @@ func queryBuildByKeyword(searchKeyword string) elastic.Query {
 	return query
 }
 
-func BuildSuggestQuery(searchKeyword string) string {
-	// 고루틴 사용해서 병렬로 처리?
-	// 통신 끝나면 한번에 같이 반환
-	// 속도도 더 빠를듯 함.
+func BuildSuggestQuery(suggestKeyword *string, ch chan bool) {
 	termSuggester := elastic.NewTermSuggester("movie-suggestion").
 		Field("movieNm_text.spell").
 		StringDistance("jaro_winkler").
-		Text(searchKeyword)
+		Text(*suggestKeyword)
 
 	query := elastic.NewSearchSource().
 		Suggester(termSuggester).
@@ -125,15 +136,14 @@ func BuildSuggestQuery(searchKeyword string) string {
 
 	suggestions := searchResult.Suggest["movie-suggestion"]
 
-	var resp string
-
 	for _, i := range suggestions {
 		for _, j := range i.Options {
-			resp = j.Text
+			*suggestKeyword = j.Text
+			break
 		}
 	}
 
-	util.CombineSplitWords(&resp)
+	util.CombineSplitWords(suggestKeyword)
 
-	return resp
+	ch <- true
 }

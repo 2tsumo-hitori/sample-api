@@ -1,13 +1,18 @@
 package util
 
 import (
+	"bytes"
+	"fmt"
+	"golang.org/x/text/encoding/korean"
+	"golang.org/x/text/transform"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 )
 
 const (
-	pythonPath = "/usr/bin/python3"
+	pythonPath = "C:/Users/danawa/AppData/Local/Programs/Python/Python311/python.exe"
 	pythonFile = "/unicode.py"
 )
 
@@ -78,5 +83,14 @@ func CombineSplitWords(spell *string) {
 		panic(err)
 	}
 
-	*spell = string(output)
+	decoder := korean.EUCKR.NewDecoder()
+	reader := transform.NewReader(bytes.NewReader(output), decoder)
+	decodedBytes, err := ioutil.ReadAll(reader)
+
+	if err != nil {
+		fmt.Println("오류:", err)
+		return
+	}
+
+	*spell = string(decodedBytes)
 }
