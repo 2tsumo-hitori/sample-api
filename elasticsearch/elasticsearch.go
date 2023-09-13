@@ -10,7 +10,7 @@ import (
 type SearchService interface {
 	BuildSuggestQuery(suggestKeyword *string, ch chan bool)
 	BuildMatchQuery(searchKeyword string, q *util.Queue, fields ...string)
-	SendRequestToElastic(q util.Queue, resp *[]model.SearchResponse)
+	SendRequestToElastic(q *util.Queue, resp *[]model.SearchResponse)
 	QueryBuildByKeyword(searchKeyword string) interface{}
 }
 

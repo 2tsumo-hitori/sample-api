@@ -5,7 +5,7 @@ import (
 	"github.com/2tsumo-hitori/sample-api/util"
 )
 
-func (es *TestService) SendRequestToElastic(queryQueue util.Queue, resp *[]model.SearchResponse) {
+func (es *TestService) SendRequestToElastic(queryQueue *util.Queue, resp *[]model.SearchResponse) {
 	*resp = append(*resp, model.SearchResponse{MovieNm: "테스트 성공"})
 }
 

@@ -19,7 +19,7 @@ const (
 )
 
 // SendRequestToElastic 검색어를 [일반검색, 한/영 오타변환, 영/한 오타변환] 쿼리들로 만들어 queue에 쌓고 재귀적으로 오타교정 구현
-func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue util.Queue, resp *[]model.SearchResponse) {
+func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue *util.Queue, resp *[]model.SearchResponse) {
 	// 종료 조건
 	if queryQueue.IsEmpty() {
 		return

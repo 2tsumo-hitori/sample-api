@@ -14,16 +14,15 @@ const (
 
 func SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse, es elasticsearch.SearchService) {
 	suggestKeyword := searchKeyword
-
-	ch := make(chan bool)
-	go es.BuildSuggestQuery(&suggestKeyword, ch)
-
 	q := util.Queue{}
+	ch := make(chan bool)
+
+	go es.BuildSuggestQuery(&suggestKeyword, ch)
 
 	_, s := util.InspectSpell(searchKeyword)
 
 	es.BuildMatchQuery(s, &q, movieNmText, movieNmEngToKor, movieNmKorToEng)
-	es.SendRequestToElastic(q, resp)
+	es.SendRequestToElastic(&q, resp)
 
 	if len(*resp) != 0 {
 		return
@@ -31,9 +30,8 @@ func SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse, es elas
 
 	select {
 	case <-ch:
-		q := util.Queue{}
 		es.BuildMatchQuery(suggestKeyword, &q, movieNmText)
-		es.SendRequestToElastic(q, resp)
+		es.SendRequestToElastic(&q, resp)
 		close(ch)
 	}
 }
@@ -43,5 +41,5 @@ func AutoCompleteByKeyword(searchKeyword string, resp *[]model.SearchResponse, e
 
 	q.Enqueue(es.QueryBuildByKeyword(searchKeyword))
 
-	es.SendRequestToElastic(q, resp)
+	es.SendRequestToElastic(&q, resp)
 }
