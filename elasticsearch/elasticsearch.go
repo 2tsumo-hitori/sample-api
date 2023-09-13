@@ -11,7 +11,7 @@ type SearchService interface {
 	BuildSuggestQuery(suggestKeyword *string, ch chan bool)
 	BuildMatchQuery(searchKeyword string, q *util.Queue, fields ...string)
 	SendRequestToElastic(q util.Queue, resp *[]model.SearchResponse)
-	QueryBuildByKeyword(searchKeyword string) elastic.Query
+	QueryBuildByKeyword(searchKeyword string) interface{}
 }
 
 type DefaultElasticsearchService struct {
@@ -22,4 +22,10 @@ func NewDefaultElasticsearchService() SearchService {
 	return &DefaultElasticsearchService{
 		client: esclient.Client(),
 	}
+}
+
+type TestService struct{}
+
+func NewTestService() SearchService {
+	return &TestService{}
 }

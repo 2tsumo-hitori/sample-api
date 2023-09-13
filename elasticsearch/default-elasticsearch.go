@@ -18,7 +18,7 @@ const (
 	movieNmCount = "movieNmCount"
 )
 
-// 검색어를 [일반검색, 한/영 오타변환, 영/한 오타변환] 쿼리들로 만들어 queue에 쌓고 재귀적으로 오타교정 구현
+// SendRequestToElastic 검색어를 [일반검색, 한/영 오타변환, 영/한 오타변환] 쿼리들로 만들어 queue에 쌓고 재귀적으로 오타교정 구현
 func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue util.Queue, resp *[]model.SearchResponse) {
 	// 종료 조건
 	if queryQueue.IsEmpty() {
@@ -52,7 +52,7 @@ func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue util.Queu
 	}
 }
 
-func (es *DefaultElasticsearchService) QueryBuildByKeyword(searchKeyword string) elastic.Query {
+func (es *DefaultElasticsearchService) QueryBuildByKeyword(searchKeyword string) interface{} {
 	var query elastic.Query
 
 	if spell, s := util.InspectSpell(searchKeyword); spell == word {
