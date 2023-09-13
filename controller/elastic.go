@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/2tsumo-hitori/sample-api/elasticsearch"
 	"github.com/2tsumo-hitori/sample-api/handler"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/response"
@@ -25,7 +26,7 @@ func (controller *Controller) MovieSearch(c *gin.Context) {
 		panic(err)
 	}
 
-	handler.SearchByKeyword(requestBody.MovieNm, &movies)
+	handler.SearchByKeyword(requestBody.MovieNm, &movies, elasticsearch.NewDefaultElasticsearchService())
 
 	c.JSON(http.StatusOK, response.NewResponse(movies))
 }
@@ -41,13 +42,13 @@ func (controller *Controller) MovieSearch(c *gin.Context) {
 // @Router /es/ac [post]
 func (controller *Controller) AutoCompleteSearch(c *gin.Context) {
 	var requestBody model.MovieRequest
-	var movies []model.AutoCompleteResponse
+	var movies []model.SearchResponse
 
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		panic(err)
 	}
 
-	handler.AutoCompleteByKeyword(requestBody.MovieNm, &movies)
+	handler.AutoCompleteByKeyword(requestBody.MovieNm, &movies, elasticsearch.NewDefaultElasticsearchService())
 
 	c.JSON(http.StatusOK, response.NewResponse(movies))
 }
