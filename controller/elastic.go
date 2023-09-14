@@ -9,6 +9,13 @@ import (
 	"net/http"
 )
 
+// 의존성 주입
+var esService handler.DefaultService
+
+func init() {
+	esService = handler.DefaultService{Es: elasticsearch.NewDefaultElasticsearchService()}
+}
+
 // MovieSearch 함수는 영화 검색을 제공합니다.
 // @Summary 영화 검색
 // @Description 검색 키워드에 해당되는 영화 목록을 제공합니다.
@@ -26,7 +33,7 @@ func (controller *Controller) MovieSearch(c *gin.Context) {
 		panic(err)
 	}
 
-	handler.SearchByKeyword(requestBody.MovieNm, &movies, elasticsearch.NewDefaultElasticsearchService())
+	esService.SearchByKeyword(requestBody.MovieNm, &movies)
 
 	c.JSON(http.StatusOK, response.NewResponse(movies))
 }
@@ -48,7 +55,7 @@ func (controller *Controller) AutoCompleteSearch(c *gin.Context) {
 		panic(err)
 	}
 
-	handler.AutoCompleteByKeyword(requestBody.MovieNm, &movies, elasticsearch.NewDefaultElasticsearchService())
+	esService.AutoCompleteByKeyword(requestBody.MovieNm, &movies)
 
 	c.JSON(http.StatusOK, response.NewResponse(movies))
 }

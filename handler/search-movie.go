@@ -12,17 +12,21 @@ const (
 	movieNmKorToEng = "movieNm_kor2eng"
 )
 
-func SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse, es elasticsearch.SearchService) {
+type DefaultService struct {
+	Es elasticsearch.SearchService
+}
+
+func (ds *DefaultService) SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse) {
 	suggestKeyword := searchKeyword
 	q := util.Queue{}
 	ch := make(chan bool)
 
-	go es.BuildSuggestQuery(&suggestKeyword, ch)
+	go ds.Es.BuildSuggestQuery(&suggestKeyword, ch)
 
 	_, s := util.InspectSpell(searchKeyword)
 
-	es.BuildMatchQuery(s, &q, movieNmText, movieNmEngToKor, movieNmKorToEng)
-	es.SendRequestToElastic(&q, resp)
+	ds.Es.BuildMatchQuery(s, &q, movieNmText, movieNmEngToKor, movieNmKorToEng)
+	ds.Es.SendRequestToElastic(&q, resp)
 
 	if len(*resp) != 0 {
 		return
@@ -30,16 +34,16 @@ func SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse, es elas
 
 	select {
 	case <-ch:
-		es.BuildMatchQuery(suggestKeyword, &q, movieNmText)
-		es.SendRequestToElastic(&q, resp)
+		ds.Es.BuildMatchQuery(suggestKeyword, &q, movieNmText)
+		ds.Es.SendRequestToElastic(&q, resp)
 		close(ch)
 	}
 }
 
-func AutoCompleteByKeyword(searchKeyword string, resp *[]model.SearchResponse, es elasticsearch.SearchService) {
+func (ds *DefaultService) AutoCompleteByKeyword(searchKeyword string, resp *[]model.SearchResponse) {
 	q := util.Queue{}
 
-	q.Enqueue(es.QueryBuildByKeyword(searchKeyword))
+	q.Enqueue(ds.Es.QueryBuildByKeyword(searchKeyword))
 
-	es.SendRequestToElastic(&q, resp)
+	ds.Es.SendRequestToElastic(&q, resp)
 }

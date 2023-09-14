@@ -1,9 +1,10 @@
 package main
 
-import "github.com/2tsumo-hitori/sample-api/router"
-import "github.com/2tsumo-hitori/sample-api/config/esclient"
+import (
+	_ "github.com/2tsumo-hitori/sample-api/config/esclient"
+	"github.com/2tsumo-hitori/sample-api/router"
+)
 
 func main() {
-	esclient.InitElasticSearch()
 	router.InitRouter()
 }

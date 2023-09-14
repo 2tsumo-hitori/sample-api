@@ -9,10 +9,12 @@ import (
 	"testing"
 )
 
+var esService = handler.DefaultService{Es: elasticsearch.NewTestService()}
+
 func TestBuildSuggestQuery(t *testing.T) {
 	searchKeyword := "안녕"
 	var resp []model.SearchResponse
-	handler.SearchByKeyword(searchKeyword, &resp, elasticsearch.NewTestService())
+	esService.SearchByKeyword(searchKeyword, &resp)
 
 	fmt.Println(resp[0].MovieNm)
 

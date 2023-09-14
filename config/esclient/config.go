@@ -8,7 +8,7 @@ import (
 
 var client *elastic.Client
 
-func InitElasticSearch() {
+func init() {
 	var err error
 
 	client, err = elastic.NewClient(
