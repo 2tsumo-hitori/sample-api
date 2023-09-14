@@ -4,6 +4,9 @@ FROM golang:alpine
 # 작업 디렉터리 설정
 WORKDIR /app
 
+# 파이썬 설치
+RUN apk update && apk add python3
+
 # 현재 디렉터리의 모든 파일을 컨테이너 내 /app 디렉터리로 복사
 COPY . .
 
