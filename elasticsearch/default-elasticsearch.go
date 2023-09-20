@@ -50,6 +50,8 @@ func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue *util.Que
 
 		*resp = append(*resp, movie)
 	}
+
+	return
 }
 
 func (es *DefaultElasticsearchService) QueryBuildByKeyword(searchKeyword string) interface{} {
@@ -98,13 +100,13 @@ func (es *DefaultElasticsearchService) BuildSuggestQuery(suggestKeyword *string,
 		}
 	}
 
-	util.CombineSplitWords(suggestKeyword)
+	util.NormalizeUniCode(suggestKeyword)
 
 	ch <- true
 }
 
 func (es *DefaultElasticsearchService) BuildMatchQuery(text string, queue *util.Queue, fields ...string) {
-	for _, value := range fields {
-		queue.Enqueue(elastic.NewMatchQuery(value, text))
+	for _, field := range fields {
+		queue.Enqueue(elastic.NewMatchQuery(field, text))
 	}
 }

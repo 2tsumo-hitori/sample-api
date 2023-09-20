@@ -18,6 +18,7 @@ type DefaultService struct {
 
 func (ds *DefaultService) SearchByKeyword(searchKeyword string, resp *[]model.SearchResponse) {
 	suggestKeyword := searchKeyword
+
 	q := util.Queue{}
 	ch := make(chan bool)
 

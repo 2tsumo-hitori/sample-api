@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"fmt"
 	"golang.org/x/text/encoding/korean"
+	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -93,4 +96,16 @@ func CombineSplitWords(spell *string) {
 	}
 
 	*spell = string(decodedBytes)
+}
+
+func NormalizeUniCode(suggestKeyword *string) {
+
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	result, _, err := transform.String(t, *suggestKeyword)
+
+	if err != nil {
+		panic(err)
+	}
+
+	*suggestKeyword = result
 }

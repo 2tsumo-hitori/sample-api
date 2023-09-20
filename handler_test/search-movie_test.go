@@ -1,22 +1,29 @@
 package handler_test
 
 import (
-	"fmt"
 	"github.com/2tsumo-hitori/sample-api/elasticsearch"
 	"github.com/2tsumo-hitori/sample-api/handler"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
-var esService = handler.DefaultService{Es: elasticsearch.NewTestService()}
+var esService = handler.DefaultService{Es: elasticsearch.NewDefaultElasticsearchService()}
 
-func TestBuildSuggestQuery(t *testing.T) {
+func TestSearchByKeyword(t *testing.T) {
 	searchKeyword := "안녕"
 	var resp []model.SearchResponse
 	esService.SearchByKeyword(searchKeyword, &resp)
 
-	fmt.Println(resp[0].MovieNm)
-
 	assert.True(t, len(resp) != 0)
+}
+
+func TestAutoCompleteByKeyword(t *testing.T) {
+	searchKeyword := "ㅎㅂㄹㄱ"
+	var resp []model.SearchResponse
+
+	esService.AutoCompleteByKeyword(searchKeyword, &resp)
+
+	assert.True(t, strings.Contains(resp[0].MovieNm, "해바라기"))
 }
