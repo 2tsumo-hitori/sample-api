@@ -20,7 +20,7 @@ jobs:
 
     - name: Build
       run: |
-        cd ..
+        cd ../..
         go build -v ./...
       
     - name: Login to DockerHub
