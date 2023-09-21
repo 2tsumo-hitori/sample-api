@@ -3,6 +3,7 @@ package elasticsearch
 import (
 	"context"
 	"encoding/json"
+	"github.com/2tsumo-hitori/sample-api/config/esclient"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/util"
 	"github.com/olivere/elastic/v7"
@@ -17,6 +18,16 @@ const (
 	chosungBack  = "movieNm_chosung_back"
 	movieNmCount = "movieNmCount"
 )
+
+type DefaultElasticsearchService struct {
+	client *elastic.Client
+}
+
+func NewDefaultElasticsearchService() SearchService {
+	return &DefaultElasticsearchService{
+		client: esclient.Client(),
+	}
+}
 
 // SendRequestToElastic 검색어를 [일반검색, 한/영 오타변환, 영/한 오타변환] 쿼리들로 만들어 queue에 쌓고 재귀적으로 오타교정 구현
 func (es *DefaultElasticsearchService) SendRequestToElastic(queryQueue *util.Queue, resp *[]model.SearchResponse) {

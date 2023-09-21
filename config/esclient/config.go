@@ -1,8 +1,8 @@
 package esclient
 
 import (
-	"fmt"
 	"github.com/olivere/elastic/v7"
+	"log"
 	"time"
 )
 
@@ -18,10 +18,9 @@ func init() {
 		elastic.SetMaxRetries(5))
 
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		log.Printf("현재 연결된 엘라스틱서치 노드가 없습니다.")
 	}
-
-	fmt.Println(client)
 }
 
 func Client() *elastic.Client {

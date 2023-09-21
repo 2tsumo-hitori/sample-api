@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-var esService = handler.DefaultService{Es: elasticsearch.NewDefaultElasticsearchService()}
+var esService = handler.DefaultService{Es: elasticsearch.NewTestService()}
 
 func TestSearchByKeyword(t *testing.T) {
 	searchKeyword := "안녕"
@@ -25,5 +25,5 @@ func TestAutoCompleteByKeyword(t *testing.T) {
 
 	esService.AutoCompleteByKeyword(searchKeyword, &resp)
 
-	assert.True(t, strings.Contains(resp[0].MovieNm, "해바라기"))
+	assert.True(t, strings.Contains(resp[0].MovieNm, "테스트 성공"))
 }
