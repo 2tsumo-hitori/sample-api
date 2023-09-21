@@ -4,7 +4,6 @@ WORKDIR /tmp/tiny-golang-image
 
 COPY . .
 
-RUN go mod init github.com/2tsumo-hitori/sample-api
 RUN go mod tidy \
     && go get -u -d -v ./...
 
