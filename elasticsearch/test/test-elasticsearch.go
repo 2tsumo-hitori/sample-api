@@ -1,13 +1,14 @@
-package elasticsearch
+package test
 
 import (
+	"github.com/2tsumo-hitori/sample-api/elasticsearch"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/util"
 )
 
 type TestService struct{}
 
-func NewTestService() SearchService {
+func NewTestService() elasticsearch.SearchService {
 	return &TestService{}
 }
 

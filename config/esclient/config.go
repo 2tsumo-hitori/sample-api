@@ -18,8 +18,8 @@ func init() {
 		elastic.SetMaxRetries(5))
 
 	if err != nil {
-		log.Println(err)
 		log.Printf("현재 연결된 엘라스틱서치 노드가 없습니다.")
+		panic(err)
 	}
 }
 

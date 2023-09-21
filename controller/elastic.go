@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/2tsumo-hitori/sample-api/elasticsearch"
+	"github.com/2tsumo-hitori/sample-api/elasticsearch/olivere"
 	"github.com/2tsumo-hitori/sample-api/handler"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/response"
@@ -13,7 +13,7 @@ import (
 var esService handler.DefaultService
 
 func init() {
-	esService = handler.DefaultService{Es: elasticsearch.NewDefaultElasticsearchService()}
+	esService = handler.DefaultService{Es: olivere.NewDefaultElasticsearchService()}
 }
 
 // MovieSearch 함수는 영화 검색을 제공합니다.

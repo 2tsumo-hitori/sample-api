@@ -1,7 +1,7 @@
 package handler_test
 
 import (
-	"github.com/2tsumo-hitori/sample-api/elasticsearch"
+	"github.com/2tsumo-hitori/sample-api/elasticsearch/test"
 	"github.com/2tsumo-hitori/sample-api/handler"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/stretchr/testify/assert"
@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-var esService = handler.DefaultService{Es: elasticsearch.NewTestService()}
+var esService = handler.DefaultService{Es: test.NewTestService()}
 
 func TestSearchByKeyword(t *testing.T) {
 	searchKeyword := "안녕"

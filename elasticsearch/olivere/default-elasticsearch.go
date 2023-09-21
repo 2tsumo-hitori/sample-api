@@ -1,9 +1,10 @@
-package elasticsearch
+package olivere
 
 import (
 	"context"
 	"encoding/json"
 	"github.com/2tsumo-hitori/sample-api/config/esclient"
+	"github.com/2tsumo-hitori/sample-api/elasticsearch"
 	"github.com/2tsumo-hitori/sample-api/model"
 	"github.com/2tsumo-hitori/sample-api/util"
 	"github.com/olivere/elastic/v7"
@@ -23,7 +24,7 @@ type DefaultElasticsearchService struct {
 	client *elastic.Client
 }
 
-func NewDefaultElasticsearchService() SearchService {
+func NewDefaultElasticsearchService() elasticsearch.SearchService {
 	return &DefaultElasticsearchService{
 		client: esclient.Client(),
 	}
